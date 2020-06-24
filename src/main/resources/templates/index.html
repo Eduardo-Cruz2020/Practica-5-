@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>Endpoint Alumnos</title>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  	  <script src="https://apis.google.com/js/client.js?onload=function"></script>
+  	
+	
+	</head>
+	
+	<body>
+	
+	<h1>End-point REST (Alumnos)</h1>
+	Matricula: <input type="text" id="mat"><br>
+	Nombre: <input type="text" id="nombre"><br>
+    Carrera: <input type="text" id="carrera"><br>
+    
+    <button onclick= update()> Actualiza</button>
+    <button onclick=crea()> Crea</button>
+    <button onclick= delete()> Borra</button>
+    <button onclick= retrieve()> Recupera</button>
+    <button onclick= retrieveAll()> Recupera todos</button>
+    
+    <script>
+    
+    var nomb = document.getElementById("nombre").value;
+    var mat = document.getElementById("mat").value;
+    var car = document.getElementById("carrera").value;
+    
+    function crea(){
+		$.ajax({
+		  method: "POST",
+		  url: "http://localhost:8080/alumnos/",
+		  data: JSON.stringify({ matricula: mat, nombre: nomb, carrera: car }),
+		  contentType: "application/json"
+		});
+	}
+	
+	function update(){
+		$.ajax({
+		  method: "PUT",
+		  url: "http://localhost:8080/alumnos/{matricula}",
+		  data: JSON.stringify({ matricula: mat, nombre: nomb, carrera: car }),
+		  contentType: "application/json"
+		})
+	}
+	//No seguí con los siguientes por que no pude hacer que estos funcionaran uU
+    </script>
+	
+	<body>
+</html>
