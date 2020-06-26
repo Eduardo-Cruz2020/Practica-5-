@@ -4,9 +4,6 @@
 	<title>Endpoint Alumnos</title>
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  	  <script src="https://apis.google.com/js/client.js?onload=function"></script>
-  	
 	
 	</head>
 	
@@ -18,36 +15,105 @@
     Carrera: <input type="text" id="carrera"><br>
     
     <button onclick= update()> Actualiza</button>
-    <button onclick=crea()> Crea</button>
-    <button onclick= delete()> Borra</button>
+    <button onclick= create()> Crea</button>
+    <button onclick= deleteA()> Borra</button>
     <button onclick= retrieve()> Recupera</button>
-    <button onclick= retrieveAll()> Recupera todos</button>
+    <button onclick= retrieveAll()> Recupera Todos</button>
+   
+    <div id="id01"></div>
     
     <script>
     
-    var nomb = document.getElementById("nombre").value;
-    var mat = document.getElementById("mat").value;
-    var car = document.getElementById("carrera").value;
-    
-    function crea(){
-		$.ajax({
+    function create(){
+		var request = $.ajax({
 		  method: "POST",
 		  url: "http://localhost:8080/alumnos/",
-		  data: JSON.stringify({ matricula: mat, nombre: nomb, carrera: car }),
+		  data: JSON.stringify({ matricula: $('#mat').val(), nombre: $('#nombre').val(), carrera: $('#carrera').val() }),
 		  contentType: "application/json"
 		});
+		request.done(function(data) {
+			alert("Alumno creado con éxito...");
+		});
+		
+		request.fail(function() {
+ 			 alert("Falló  la conexión...");
+		})
 	}
 	
 	function update(){
-		$.ajax({
+		var request = $.ajax({
 		  method: "PUT",
-		  url: "http://localhost:8080/alumnos/{matricula}",
-		  data: JSON.stringify({ matricula: mat, nombre: nomb, carrera: car }),
+		  url: "http://localhost:8080/alumnos/"+$('#mat').val(),
+		  data: JSON.stringify({ matricula: $('#mat').val(), nombre: $('#nombre').val(), carrera: $('#carrera').val() }),
 		  contentType: "application/json"
+		});
+		request.done(function(data) {
+      		$("#id01").text("Matricula: " + data.matricula + " Nombre: " + data.nombre + " Carrera:" + data.carrera);
+		});
+		
+		request.fail(function() {
+ 			 alert("Falló  la conexión...");
 		})
 	}
-	//No seguí con los siguientes por que no pude hacer que estos funcionaran uU
-    </script>
 	
-	<body>
+	function retrieveAll(){
+		var request = $.ajax({
+		  method: "GET",
+		  url: "http://localhost:8080/alumnos/"
+		});
+		request.done(function(data) {
+			var i;
+			for(i=0; i<data.length; i++){
+      		$("#id01").text("Matricula: " + data[i].matricula + " Nombre: " + data[i].nombre + " Carrera:" + data[i].carrera);
+      		var out = "<table>";
+      		for(i = 0; i < data.length; i++) {
+        		out += "<tr><td>" +
+        		data[i].matricula +
+        		"</td><td>" +
+        		data[i].nombre +
+        		"</td><td>" +
+        		data[i].carrera +
+        		"</td></tr>";
+      		}
+      		out += "</table>";
+      		$('#id01').html(out);
+      		}
+		});
+		
+		request.fail(function() {
+ 			 alert("Falló  la conexión...");
+		});
+	}
+	
+	function retrieve(){
+		var request = $.ajax({
+		  method: "GET",
+		  url: "http://localhost:8080/alumnos/"+$('#mat').val()
+		});
+		request.done(function(data) {
+      		$("#id01").text("Matricula: " + data.matricula + " Nombre: " + data.nombre + " Carrera:" + data.carrera);
+		});
+		
+		request.fail(function() {
+ 			 alert("Falló  la conexión...");
+		});
+	}
+
+   function deleteA(){
+		var request = $.ajax({
+		  method: "DELETE",
+		  url: "http://localhost:8080/alumnos/"+$('#mat').val()
+		});
+		request.done(function(data) {
+      		alert("Alumno eliminado con éxito");
+		});
+				request.fail(function() {
+ 			 alert("Falló  la conexión...");
+		});
+		
+	}
+	
+   </script>
+	
+	</body>
 </html>
