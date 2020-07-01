@@ -1,6 +1,6 @@
 package mx.uam.tsis.ejemplobackend.negocio;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,9 +22,9 @@ public class AlumnoService {
 	public Alumno create(Alumno nuevoAlumno) {
 		
 		// Regla de negocio: No se puede crear más de un alumno con la misma matricula
-		Alumno alumno = alumnoRepository.findByMatricula(nuevoAlumno.getMatricula());
+		Optional<Alumno> alumno = alumnoRepository.findById(nuevoAlumno.getMatricula());
 		
-		if(alumno == null) {
+		if(!alumno.isPresent()) {
 			return alumnoRepository.save(nuevoAlumno);
 		} 
 		else {
@@ -36,8 +36,8 @@ public class AlumnoService {
 	 * Recupera la lista de la alumnos 
 	 * @return lista de alumnos
 	 */
-	public List <Alumno> retrieveAll () {
-		return alumnoRepository.find();
+	public Iterable <Alumno> retrieveAll () {
+		return alumnoRepository.findAll();
 	}
 	
 	/**
@@ -45,8 +45,8 @@ public class AlumnoService {
 	 * @param matricula
 	 * @return un alumno, null si no lo encontró
 	 */
-	public Alumno retrieve(int matricula) {
-		return alumnoRepository.findByMatricula(matricula);
+	public Optional<Alumno> retrieve(int matricula) {
+		return alumnoRepository.findById(matricula);
 	}
 	
 	/**
@@ -55,16 +55,17 @@ public class AlumnoService {
 	 * @return el alumno actualizado, null si no existe
 	 */
 	public Alumno update(Alumno alumnoModificado) {
-		return alumnoRepository.update(alumnoModificado);
+		return alumnoRepository.save(alumnoModificado);
 	}
 	
 	/**
 	 * Solicita al repository eliminar un alumno
 	 * @param matricula
-	 * @return el alumno eliminado, null si no existe
+	 * @return 
+	 * @return el alumno eliminado, null si no existe2
 	 */
-	public Alumno delete(int matricula) {
-		return alumnoRepository.delete(matricula);
+	public void delete(int matricula) {
+		alumnoRepository.deleteById(matricula);
 	}
 	
 }
