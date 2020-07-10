@@ -1,6 +1,5 @@
 package mx.uam.tsis.ejemplobackend.servicios;
 
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -72,15 +71,13 @@ public class AlumnoController {
 	public ResponseEntity <?> retrieve(@PathVariable("matricula") Integer matricula) {
 		log.info("Buscando al alumno con matricula "+matricula);
 		
-		Optional<Alumno> alumno = alumnoService.retrieve(matricula);
-		
-		if(!alumno.isPresent()) {
-			return ResponseEntity.status(HttpStatus.OK).body(alumno);			
-		} 
+		Alumno alumno = alumnoService.retrieve(matricula);
+		if (alumno != null) {
+			return ResponseEntity.status(HttpStatus.OK).body(alumno); 		
+		}
 		else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no se encontró el alumno");
 		}
-
 	}
 
 	@ApiOperation(
@@ -92,10 +89,10 @@ public class AlumnoController {
 		
 		log.info("Actualizando alumno con matricula " + matricula + " como " +AlumnoU );
 		
-		Alumno alumno = alumnoService.update(AlumnoU);
+		boolean alumno = alumnoService.update(AlumnoU);
 		
-		if(alumno != null) {
-			return ResponseEntity.status(HttpStatus.OK).body(alumno);
+		if(alumno) {
+			return ResponseEntity.status(HttpStatus.OK).body(AlumnoU);
 		} 
 		else {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("no existe pudo actualizar alumno");
@@ -113,17 +110,14 @@ public class AlumnoController {
 	public ResponseEntity <?> delete(@PathVariable("matricula") Integer matricula) {
 		log.info("Eliminando al alumno con matricula "+matricula);
 		
-		Optional<Alumno> alumno = alumnoService.retrieve(matricula);
+		Alumno alumno = alumnoService.retrieve(matricula);
 
-		alumnoService.delete(matricula);
-		
-		if(!alumno.isPresent()) {
+		if (alumno != null) {
 			alumnoService.delete(matricula);
 			return ResponseEntity.status(HttpStatus.OK).build();
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-
+		else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("no se encontró el alumno");
+		}
 	}
- 
-}
+ }

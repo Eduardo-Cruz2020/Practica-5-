@@ -5,10 +5,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import mx.uam.tsis.ejemplobackend.datos.AlumnoRepository;
 import mx.uam.tsis.ejemplobackend.negocio.modelo.Alumno;
 
 @Service
+@Slf4j
 public class AlumnoService {
 
 	@Autowired
@@ -45,17 +47,33 @@ public class AlumnoService {
 	 * @param matricula
 	 * @return un alumno, null si no lo encontró
 	 */
-	public Optional<Alumno> retrieve(int matricula) {
-		return alumnoRepository.findById(matricula);
-	}
+	public Alumno retrieve(int matricula) {		
+		Optional <Alumno> alumnoOpt = alumnoRepository.findById(matricula);
+		return alumnoOpt.get();}
 	
 	/**
 	 * Solicita al repository actualizar un alumno
 	 * @param alumno a actualizar
 	 * @return el alumno actualizado, null si no existe
 	 */
-	public Alumno update(Alumno alumnoModificado) {
-		return alumnoRepository.save(alumnoModificado);
+	public boolean update(Alumno alumnoModificado) {		// Primero veo que si esté en la BD
+		Optional <Alumno> alumnoOpt = alumnoRepository.findById(alumnoModificado.getMatricula());
+		
+		
+		if(alumnoOpt.isPresent()) {
+			Alumno alumno = alumnoOpt.get(); // Este es el que está en la bd
+			
+			alumno.setCarrera(alumnoModificado.getCarrera());
+			alumno.setNombre(alumnoModificado.getNombre());
+			
+			log.info("Persistiendo los cambios "+alumno.getCarrera());
+			
+			alumnoRepository.save(alumno); // Persisto los cambios
+			
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	/**

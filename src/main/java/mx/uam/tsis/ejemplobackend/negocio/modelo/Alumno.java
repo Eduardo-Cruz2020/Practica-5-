@@ -3,6 +3,8 @@ package mx.uam.tsis.ejemplobackend.negocio.modelo;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,10 +22,11 @@ public class Alumno {
 	@Id // Indica que este es llave primaria
 	private Integer matricula;
 	
-	
+	@NotBlank
 	@ApiModelProperty(notes = "Nombre del alumno", required = true)
 	private String nombre;
 	
+	@NotBlank
 	@ApiModelProperty(notes = "Carrera del alumno", required = true)
 	private String carrera;
 }
